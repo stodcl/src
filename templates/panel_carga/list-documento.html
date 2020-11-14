@@ -1,0 +1,39 @@
+{% extends 'index-base.html' %}
+
+{% block content %}
+
+<!--Tabla-->
+  <div class="row row-sm d-flex justify-content-center mg-t-20" >
+      <div class="bd bd-gray-300 rounded table-responsive">
+        <table class="table table-striped mg-b-0 table-bordered table-primary"id="tblData">
+          <thead>
+            <tr>
+              <th style="text-align: center;border: 2px;border-color: grey; color: white;">Nombre</th>
+              <th style="text-align: center;border: 2px;border-color: grey; color: white;">Tipo <br> Doc.</th>
+              <th style="text-align: center;border: 2px;border-color: grey; color: white;">Descripcion <br>Documentos</th>
+              <th style="text-align: center;border: 2px;border-color: grey; color: white;">N° Documento <br>Contractual</th>
+              <th style="text-align: center;border: 2px;border-color: grey; color: white;"> Creador </th>
+              <th style="text-align: center;border: 2px;border-color: grey; color: white;"> Archivo </th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for documento in documentos %}
+            <tr>
+              <th> {{documento.nombre}} </th>
+              <th> {{documento.tipo}} </th>
+              <th> {{documento.descripcion}} </th>
+              <th> {{documento.num_documento}} </th>
+              <th> {{documento.owner}} </th>           
+              <th><form  class="nav-item "method="POST" enctype="multipart/form-data">{% csrf_token %}<li class="nav-item float-left mg-t-7" style="width: auto;"><a class="nav-link active"><input type="file" name="importfile" id="file" onchange="fileValidation()"></a></li><li class="nav-item float-left"style="width: auto;"><a class="nav-link"><button class="btn btn-outline-danger" type="submit"> Importar </button></a></li></form></th>           
+            </tr>
+          {% empty %}
+              <th> Aun no hay documentos cargados para el proyecto actual. </th>              
+          {% endfor %}
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

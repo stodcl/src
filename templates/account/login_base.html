@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+    <title> Acceso || DMP</title>
+
+    <!-- vendor css -->
+    <link href="{% static 'font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% static 'Ionicons/css/ionicons.css' %}" rel="stylesheet">
+
+    <!-- Bracket CSS -->
+    <link rel="stylesheet" href="{% static 'css/bracket.css' %}">
+  </head>
+
+  <body>
+
+    <div class="d-flex align-items-center justify-content-center ht-100v" style="background-image: url('https://fotorecurso.com/images/2016/04/29/fondo-azul-exagonos-fotorecurso.jpg');">
+
+      <div class="login-wrapper wd-300 wd-xs-350 pd-25 pd-xs-40 bg-white rounded shadow-base">
+        
+
+        {% block content %}
+        
+        {% endblock content %}
+
+      </div><!-- login-wrapper -->
+    </div><!-- d-flex -->
+
+    <script src="{% static 'jquery/jquery.js' %}" ></script>
+    <script src="{% static 'popper.js/popper.js' %}" ></script>
+    <script src="{% static 'bootstrap/bootstrap.js' %}" ></script> 
+
+  </body>
+</html>
