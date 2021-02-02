@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 from .choices import (ESTADO_CONTRATISTA,ESTADOS_CLIENTE,TYPES_REVISION, DOCUMENT_TYPE)
 
 
@@ -12,12 +13,18 @@ class Proyecto(models.Model):
     fecha_termino = models.DateTimeField(verbose_name="Fecha de Termino", blank=True)
     descripcion = models.TextField(verbose_name="Descripción", blank=True)
     encargado = models.ForeignKey(User, on_delete=models.CASCADE)
+    codigo = models.CharField(max_length=100, verbose_name='Codigo del Proyecto', unique=True)
     #dias para revision
 
     def __str__(self):
         return self.nombre
 
-
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['Nombre'] = self.nombre
+        item['Fecha Inicio'] = self.fecha_inicio
+        item['Fecha Termino'] = self.fecha_termino
+        return item
 
 class Documento(models.Model):
     
@@ -29,13 +36,20 @@ class Documento(models.Model):
     Numero_documento_interno = models.CharField(verbose_name="Numero documento Interno", max_length=50, blank=True)
     archivo = models.FileField(upload_to="proyecto/documentos/", blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    fecha_Emision_B = models.DateTimeField(verbose_name="Fecha inicio emisión", blank=True, default=None) 
-    fecha_Emision_0 = models.DateTimeField(verbose_name="Fecha inicio emisión", blank=True, default=None) 
+    fecha_Emision_B = models.DateTimeField(verbose_name="Fecha inicio emisión B", blank=True, default=None) 
+    fecha_Emision_0 = models.DateTimeField(verbose_name="Fecha inicio emisión 0", blank=True, default=None) 
     
 
 
     def __str__(self):
         return self.Codigo_documento
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['Codigo_Documento'] = {'id': self.Codigo_documento, 'name': self.get_Codigo_documento_display()}
+        item['Fecha Emision B'] = self.fecha_Emision_B
+        return item
+
 
 
 
@@ -50,10 +64,17 @@ class Historial(models.Model):
 
     def __str__(self):
         return self.fecha
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['Codigo Documento'] = self.documento
+        item['Fecha'] = self.fecha
+        return item
+
 
 class Revision(models.Model):
 
-    tipo = models.IntegerField(choices=TYPES_REVISION, verbose_name="Tipo Revision", default=1)
+    tipo = models.IntegerField(choices=TYPES_REVISION, verbose_name="Tipo Revision")
     estado_cliente = models.IntegerField(choices=ESTADOS_CLIENTE, default=1)
     estado_contratista = models.IntegerField(choices=ESTADO_CONTRATISTA, default=1)
     emitida_para = models.TextField(verbose_name="Emitida para")
@@ -65,3 +86,9 @@ class Revision(models.Model):
     def __str__(self):
         return self.tipo
 
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['Codigo Documento'] = self.documento
+        item['Fecha'] = self.fecha
+        item['Emitida Para'] = self.emitida_para
+        return item

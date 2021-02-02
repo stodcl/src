@@ -2,77 +2,151 @@
 
 {% load crispy_forms_tags %}
 
-{% block mailing %}
-
-<div class="br-subleft">
-  <h6 class="tx-uppercase tx-10 tx-mont tx-spacing-1 mg-t-10 pd-x-10 tx-white-7">Filtros de Busqueda</h6>
-    <form method="GET" class="form-group col-lg-17">
-      <div class="mg-t-20 pd-x-10 mg-b-40">
-        <div class="form-group" >
-            <label class="tx-uppercase tx-10 tx-mont tx-spacing-1  pd-l-10 tx-white-7">  {{filter.form.Especialidad|as_crispy_field}}</label>
-        </div><!-- form-group -->
-            <label class="tx-uppercase tx-10 tx-mont tx-spacing-1  pd-l-10 tx-white-7">  {{filter.form.Codigo_documento|as_crispy_field}}</label>
-        <div class="form-group">
-            <label class="tx-uppercase tx-10 tx-mont tx-spacing-1  pd-l-10 tx-white-7">  {{filter.form.fecha_Emision_B|as_crispy_field}}</label>
-        </div><!-- form-group -->
-            <input type="submit" class="btn btn-primary btn-block tx-uppercase tx-10 tx-mont tx-spacing-2 tx-medium active" style="background: #00b297; border-color: #00b297;" value="Filtrar">
-      </div>
-    </form>
-     <div class=" hidden-xs-down mg-l-10">
-      <a href="{% url 'paquete-crear' %}" class="btn btn-warning">Nuevo Paquete</a>
-    </div>
-<h6 class="tx-uppercase tx-10 tx-mont tx-spacing-1 mg-t-10 pd-x-10 tx-white-7">SECCIONES</h6>
-
-  <nav class="nav br-nav-mailbox flex-column">
-       <a href="{% url 'Bandejaeys' %}" class="nav-link active"><i class="icon ion-person-stalker tx-16-force"></i> <strong>Inbox</strong></a>
-    <a href="{% url 'Borradores' %}" class="nav-link"><i class="icon ion-person-stalker tx-16-force"></i> <strong>Borradores</strong></a>
-    <a href="{% url 'bandeja-enviados' %}" class="nav-link"><i class="icon ion-person-stalker tx-16-force"></i> <strong>Enviados</strong></a>
-  </nav>
-</div><!-- br-subleft -->
-
-{% endblock mailing %}
-
-
-
 {% block content %}
-
-<!--Titulo-->
-
 <div class="br-contentpanel">
-  <div class="br-pageheader pd-y-15 pd-md-l-20">
+  <div class="br-subleft">
+      <div class="pd-10">
+        <a  href="{% url 'paquete-preview' %}" class="btn btn-warning bd-0 btn-compose"><i class="icon ion-ios-compose-outline"></i> Nuevo Paquete</a>
+      </div>
+
+      <h6 class="tx-uppercase tx-10 mg-t-40 pd-x-10 bd-b pd-b-10 tx-roboto tx-white-7">SECCIONES</h6>
+
+      <nav class="nav br-nav-mailbox flex-column">
+        <a href="{% url 'Bandejaeys' %}" class="nav-link active"><i class="icon fa fa-reply"></i> Recibidos</a>
+        <a href="{% url 'Borradores' %}" class="nav-link"><i class="icon icon ion-edit"></i> Borradores</a>
+        <a href="{% url 'bandeja-enviados' %}" class="nav-link"><i class="icon fa fa-share"></i> Enviados</a>
+      </nav>
+</div>
+
+
+  <div class="br-pageheader pd-y-15 pd-l-20">
     <nav class="breadcrumb pd-0 mg-0 tx-12">
       <a class="breadcrumb-item"> {{proyecto}}</a>
-      <a class="breadcrumb-item" href="{% url 'Bandejaeys' %}">Bandeja Entrada y Salida</a>      
-      <span class="breadcrumb-item active">Crear Paquete</span>
+      <a class="breadcrumb-item" href="{% url 'Bandejaeys' %}">Bandeja de Entrada</a>      
+      <span class="breadcrumb-item active">Pre-visualización Paquete</span>
     </nav>
-  </div><!-- br-pageheader -->
-
-  <div class="pd-x-20 pd-sm-x-30 pd-t-20 pd-sm-t-30">
-    <h4 class="tx-gray-800 mg-b-5">Crear Paquete</h4>
   </div>
 
-  <div class="br-pagebody pd-x-20 pd-sm-x-30">
-    <div class="card bd-0 shadow-base">
-         <form method="POST" enctype="multipart/form-data">{% csrf_token %}
-        <label class="form-control col-12 col-sm-12">
-          <div style="height:350px;padding-left: 30px; overflow-y: scroll;">
-            {{form|crispy}}
-          </div>                                
-          <input class="btn btn-primary tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium" type="submit" value="Guardar">
-          <input class="btn btn-warning tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium" type="button" onClick="javascript:history.go(-1);" value="Volver">
-                        
+
+  <div class="pd-x-20 pd-sm-x-30 pd-t-20 pd-sm-t-30">
+    <h4 class="tx-gray-800 mg-b-5">Detalle del paquete.</h4>
+  </div>
+
+  {% comment %} {% if invalido == 0 %} {% endcomment %}
+  <div class="alert alert-success alert-bordered pd-y-20" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+            <div class="d-sm-flex align-items-center justify-content-start">
+              <i class="icon ion-ios-checkmark alert-icon tx-52 mg-r-20 tx-success"></i>
+              <div class="mg-t-20 mg-sm-t-0">
+                <h5 class="mg-b-2 tx-success">Excelente! los datos Coinciden.</h5>
+                <p class="mg-b-0 tx-gray"></p>
+              </div>
+            </div><!-- d-flex -->
+          </div>
+   <div class="br-pagebody pd-x-20 pd-sm-x-30">
+    <div class="card bd-0 shadow-base">   
+       <div class="form-layout form-layout-7 ">               
+                <div class="row no-gutters">
+                  <div class="col-5 col-sm-4" style="text-align: center;color:black;font-weight: 900;font-size: 18px;">
+                          Numero de paquete:
+                  </div><!-- col-4 -->
+                  <div class="col-7 col-sm-8" style="color:black;font-weight: 900;font-size: 18px;">
+                          {{paquete.pk}}
+                  </div><!-- col-8 -->
+                </div> 
+                <div class="row no-gutters">
+                  <div class="col-5 col-sm-4" style="text-align: center;color:black;font-weight: 900;font-size: 18px;">
+                    Asunto:
+                  </div><!-- col-4 -->
+                  <div class="col-7 col-sm-8" style="color:black;font-weight: 900;font-size: 18px;">
+                    {{paquete.prev_asunto}}
+                  </div><!-- col-8 -->
+                </div>
+                <div class="row no-gutters">
+                  <div class="col-5 col-sm-4" style="text-align: center;color:black;font-weight: 900;font-size: 18px;">
+                    creador:
+                  </div><!-- col-4 -->
+                  <div class="col-7 col-sm-8" style="color:black;font-weight: 900;font-size: 18px;">
+                    {{paquete.prev_propietario}}
+                  </div><!-- col-8 -->
+                </div>
+                <div class="row no-gutters">
+                  <div class="col-5 col-sm-4" style="text-align: center;color:black;font-weight: 900;font-size: 18px;">
+                    fecha creacion:
+                  </div><!-- col-4 -->
+                  <div class="col-7 col-sm-8" style="color:black;font-weight: 900;font-size: 18px;">
+                    {{paquete.prev_fecha_creacion|date:'d-M-Y'}}
+                  </div><!-- col-8 -->
+                </div>  
+                 <div class="row no-gutters">
+                  <div class="col-5 col-sm-4" style="text-align: center;color:black;font-weight: 900;font-size: 18px;">
+                    Hora de creacion:
+                  </div><!-- col-4 -->
+                  <div class="col-7 col-sm-8" style="color:black;font-weight: 900;font-size: 18px;">
+                    {{paquete.prev_fecha_creacion|date:'H:i'}}
+                  </div><!-- col-8 -->
+                </div>                                     
+              
+                <table class="table table-striped mg-b-0 table-bordered table-primary">
+                  <thead class="thead-colored thead-primary">
+                    <tr class="tx-10">
+                      <th class="pd-y-5"style="text-align: center;">Especialidad</th>  
+                      <th class="pd-y-5"style="text-align: center;">Nombre</th>   
+                      <th class="pd-y-5"style="text-align: center;">Tipo Documento</th>   
+                      <th class="pd-y-5"style="text-align: center;">Codigo Documento</th>  
+                      <th class="pd-y-5"style="text-align: center;">Revisión</th>
+                      <th class="pd-y-5"style="text-align: center;">Status</th>                                    
+                      <th class="pd-y-5"style="text-align: center;">Archivo</th>
+                    </tr>
+                  </thead>
                 
-       
-        </label>
-        
-        
-     </form>
+                  <tbody>
+                  {% for version in versiones %}
+                    <tr>                    
+                      <td class="tx-12"style="text-align: center;font-weight:800;">{{version.prev_documento_fk.Especialidad}} </td>    
+                      <td class="tx-12"style="text-align: center;font-weight:800;">{{version.prev_documento_fk.Descripcion}}</td>                          
+                      <td class="tx-12"style="text-align: center;font-weight:800;">{{version.prev_documento_fk.Numero_documento_interno}}</td>
+                      <td class="tx-12"style="text-align: center;font-weight:800;">{{version.prev_documento_fk.Codigo_documento}} </td>  
+                      <td class="tx-12"style="text-align: center;font-weight:800;">{{version.get_prev_revision_display}}</td>
+                      <td class="tx-12"style="text-align: center;font-weight:800;">{{version.get_prev_estado_cliente_display}}</td>                      
+                      <td class="tx-12"style="text-align: center;font-weight:800;"><a href="{{version.prev_archivo.url}}"><i class="icon ion-archive"></i></a></td>
+                    </tr>    
+                    {% empty %}
+                    <h4> El paquete no tiene documentos. </h4>
+                    {% endfor %}
+                              
+                  </tbody>
+                  
+                </table>
+                <div class="row no-gutters" style="float: left;margin-top: 10px;margin-right: 10px;margin-bottom: 10px;">
+                  <a href="{% url 'paquete-crear' paquete.pk versiones_pk %}"><button class="btn btn-primary tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium mg-l-20" type="submit"> Envíar </button></a>                  
+                  <a onclick="history.back();"><button  class="btn btn-warning tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium mg-l-10" type="buttom"> volver </button></a>
+                </div>
+        </div><!-- card -->
+    </div> 
+    </div><!-- card-header -->
 </div>
-</div>    
-      
+  {% comment %} {% else %}
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-body tx-center pd-y-20 pd-x-20">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                    <i class="icon icon ion-ios-close-outline tx-100 tx-danger lh-1 mg-t-20 d-inline-block"></i>
+                    <h4 class="tx-danger mg-b-20">Error: Los Campos no Coinciden.</h4>
+                    <p class="mg-b-20 mg-x-20">Recuerde que el documento que adjunta debe llamarse igual que el documento seleccionado.</p>
+                    <button type="button" class="btn btn-danger tx-11 tx-uppercase pd-y-12 pd-x-25 tx-mont tx-medium mg-b-20"  onclick="history.back();" aria-label="Volver">
+                      Volver</button>
+                    </div><!-- modal-body -->
+                  </div><!-- modal-content -->
+                </div><!-- modal-dialog -->
+    
+  {% endif %} {% endcomment %}
+  
 
-
-</div>
 <script>
   $(function () {
     $("#id_date").datepicker({
@@ -80,16 +154,4 @@
     });
   });
 </script>
-<script>
-2
-var formsave1=new autosaveform({
-3
-  formid:'feedbackform',
-4
-  pause: 1000//<--no comma following last option!
-5
-})
-6
-</script><br><br type="_moz">
-
 {% endblock content %}

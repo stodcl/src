@@ -1,8 +1,9 @@
 import os.path
 import datetime
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User, Group
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import TemplateView, RedirectView, View
@@ -35,7 +36,19 @@ class ProyectoSelectView(LoginRequiredMixin, SuccessMessageMixin, FormView):
     model = Proyecto
     success_url = reverse_lazy("index")
 
+    # def get(self, request, *args, **kwargs):
+        
 
+    # def get_form_kwargs(self):
+    #     proyect_list = []
+    #     kwargs = super().get_form_kwargs()
+    #     grupos = self.request.user.groups.all()
+    #     for grupo in grupos:
+    #         proyecto = Proyecto.objects.get(codigo=grupo.name)
+    #         proyect_list.append(proyecto)
+    #     kwargs['proyectos'] = proyect_list
+    #     return kwargs
+        
     def form_valid(self, form):
         self.request.session['proyecto'] = form.cleaned_data['proyectos'].id
         return super().form_valid(form)
@@ -44,10 +57,17 @@ class ProyectoMixin(SuccessMessageMixin, ProyectoSeleccionadoMixin):
     model = Proyecto
 
 class ListaProyecto(ProyectoMixin, ListView):
-    queryset = Proyecto.objects.all()
     template_name = 'panel_carga/list-proyecto.html'
     context_object_name = 'proyectos'
 
+    def get_queryset(self):
+        grupos = Group.objects.filter(user= self.request.user)
+        proyectos = Proyecto.objects.filter(codigo__in=grupos)
+        if proyectos: 
+            return proyectos
+        else:
+            return HttpResponseRedirect(reverse_lazy('proyecto-crear'))
+        
 class CreateProyecto(CreateView):
     form_class = ProyectoForm
     template_name = 'panel_carga/create-proyecto.html'
@@ -55,7 +75,10 @@ class CreateProyecto(CreateView):
 
     def form_valid(self, form):
         form.instance.encargado = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        nombre = form.instance.codigo
+        grupo = Group.objects.create(name=nombre)
+        return response
 
 class DetailProyecto(ProyectoMixin, DetailView):
     template_name = 'panel_carga/detail-proyecto.html'
@@ -86,7 +109,7 @@ class ListDocumento(ProyectoMixin, ListView):
     def get_queryset(self):
         qs =  Documento.objects.filter(proyecto=self.proyecto)
         lista_documentos_filtrados = DocFilter(self.request.GET, queryset=qs)
-        return  lista_documentos_filtrados.qs
+        return  lista_documentos_filtrados.qs.order_by('Numero_documento_interno')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -94,7 +117,6 @@ class ListDocumento(ProyectoMixin, ListView):
         context["filter"] = DocFilter(self.request.GET, queryset=self.get_queryset())
         return context
     
-
     def post(self, request, *args, **kwargs):
         documentos_erroneos = []
         dataset = Dataset()

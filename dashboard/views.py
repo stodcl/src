@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic.base import TemplateView, RedirectView, View
+from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic import FormView
 from panel_carga.views import ProyectoMixin
+from django.contrib.auth.models import User
 
-from panel_carga.models import Proyecto, Documento, Revision, Historial
 
 # Create your views here.
 

@@ -15,14 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('dashboard.urls')),
     path('account/', include('allauth.urls')),
-    path('invitations/', include('invitations.urls', namespace='invitations')),
     path('notifications/', include('notifications.urls')),
     path('panel_carga/', include('panel_carga.urls')),
     path('bandeja_es/', include('bandeja_es.urls')),
     path('analitica/', include('analitica.urls')),
+    path('configuracion/', include('configuracion.urls')),
+    path('buscador/', include('buscador.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

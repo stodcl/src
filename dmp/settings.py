@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'allauth',
-    'invitations',
     'allauth.account',
     'allauth.socialaccount',
     'import_export',
@@ -52,31 +51,38 @@ INSTALLED_APPS = [
     # 'mptt',
     # 'multiupload',
     'django_filters',
-    'graficos'
+    'formtools',
+    'rest_framework',
+    'rest_framework.authtoken',
+
+
     
     'dashboard',
     'tools',
     'notifications',
     'panel_carga',
     'bandeja_es',
+    'configuracion',
+    'buscador',
+    'status',
+    'analitica',
+    
 
 ]
+
+# AUTH_USER_MODEL = 'dashboard.Usuario'
 
 SITE_ID = 2
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Allauth methods
-ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
-
-
-# Invitations methods
-INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
-INVITATIONS_INVITATION_ONLY = False #debe ser True en producción
-INVITATIONS_EMAIL_SUBJECT_PREFIX = None
+ACCOUNT_EMAIL_VERIFICATION = True
+ACCOUNT_SIGNUP_FORM_CLAS = 'dashboard.forms.CrearUsuario'
+ACCOUNT_ADAPTER = 'configuracion.adapters.AccountAdapter'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -88,6 +94,15 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+APPEND_SLASH = False
+
+# REST Framework
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -118,6 +133,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = 'dmp.wsgi.application'
 
 
@@ -126,14 +143,20 @@ WSGI_APPLICATION = 'dmp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'dmp.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'dmpdb4',
+        'USER': 'postgres',
+        'PASSWORD': 'dmp.2020',
+        'HOST': '134.209.78.27',
+        'PORT': 5432,
+        'SSLMODE': 'require',
     }
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -162,8 +185,9 @@ LANGUAGES = (
  ('zh', _('Chinese')),
  ('en', _('English')),
 )
+TIME_ZONE = 'UTC'  # use this, whenever possible
+TIME_ZONE = 'America/Santiago'
 
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -180,3 +204,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
 STATIC_ROOT = STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR,'static/media')
+
+MEDIA_URL = '/media/'
